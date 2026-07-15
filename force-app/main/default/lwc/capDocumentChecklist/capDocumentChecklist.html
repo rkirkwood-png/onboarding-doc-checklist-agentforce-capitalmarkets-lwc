@@ -1,0 +1,356 @@
+<template>
+  <lightning-card title="Document Checklist" icon-name="standard:document">
+    <div slot="actions">
+      <lightning-button
+        label="⚡ Analyze All Documents"
+        variant="brand"
+        onclick={handleAnalyzeAll}
+        disabled={isAnalyzeDisabled}
+        title={analyzeButtonTitle}
+      >
+      </lightning-button>
+    </div>
+
+    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+      <!-- Overall progress -->
+      <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+        {totalApproved} of {totalItems} Items Approved
+      </p>
+
+      <!-- Analysis spinner -->
+      <template if:true={isAnalyzing}>
+        <div class="slds-align_absolute-center slds-m-vertical_small">
+          <lightning-spinner
+            alternative-text="Analyzing documents..."
+            size="small"
+          ></lightning-spinner>
+          <span class="slds-m-left_small slds-text-body_small"
+            >Analyzing documents with Einstein...</span
+          >
+        </div>
+      </template>
+
+      <!-- Error banner -->
+      <template if:true={errorMessage}>
+        <div
+          class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_small"
+          role="alert"
+        >
+          <lightning-icon
+            icon-name="utility:error"
+            size="x-small"
+            class="slds-m-right_x-small"
+          ></lightning-icon>
+          <span>{errorMessage}</span>
+        </div>
+      </template>
+
+      <!-- Checklist groups -->
+      <template if:true={hasChecklists}>
+        <template for:each={checklists} for:item="checklist">
+          <div key={checklist.id} class="checklist-group slds-m-top_x-small">
+            <!-- Group header -->
+            <div
+              class="group-header slds-grid slds-grid_vertical-align-center slds-p-around_x-small"
+              data-id={checklist.id}
+              onclick={handleToggleChecklist}
+            >
+              <lightning-icon
+                icon-name={checklist.chevronIcon}
+                size="x-small"
+                class="slds-m-right_x-small chevron-icon"
+              >
+              </lightning-icon>
+              <span class="slds-col slds-text-heading_small"
+                >{checklist.category}</span
+              >
+              <div
+                class="slds-col_bump-left slds-grid slds-grid_vertical-align-center"
+              >
+                <span class={checklist.progressPillClass}
+                  >{checklist.progressLabel}</span
+                >
+                <span
+                  class={checklist.statusBadgeClass}
+                  style="margin-left: 6px"
+                  >{checklist.status}</span
+                >
+              </div>
+            </div>
+
+            <!-- Item rows (visible when checklist expanded) -->
+            <template if:true={checklist.isExpanded}>
+              <div class="item-list">
+                <template for:each={checklist.items} for:item="item">
+                  <div key={item.id} class="item-row">
+                    <!-- Item collapsed header -->
+                    <div
+                      class="item-header slds-grid slds-grid_vertical-align-center slds-p-vertical_xx-small slds-p-right_x-small"
+                      data-id={item.id}
+                      onclick={handleToggleItem}
+                    >
+                      <lightning-icon
+                        icon-name={item.chevronIcon}
+                        size="x-small"
+                        class="slds-m-right_x-small slds-m-left_medium chevron-icon"
+                      >
+                      </lightning-icon>
+                      <span class="slds-col item-name slds-text-body_regular"
+                        >{item.documentTypeName}</span
+                      >
+                      <div
+                        class="badge-group slds-grid slds-grid_vertical-align-center"
+                      >
+                        <template if:true={item.isRequired}>
+                          <span
+                            class="slds-badge required-badge slds-m-right_xx-small"
+                            >Required</span
+                          >
+                        </template>
+                        <span class={item.submissionBadgeClass}
+                          >{item.submissionLabel}</span
+                        >
+                        <span
+                          class={item.statusBadgeClass}
+                          style="margin-left: 4px"
+                          >{item.status}</span
+                        >
+                        <template if:true={item.hasFlag}>
+                          <lightning-icon
+                            icon-name="utility:error"
+                            size="x-small"
+                            variant="error"
+                            title="Action Required — AI analysis flagged issues"
+                            class="slds-m-left_xx-small flag-icon"
+                          >
+                          </lightning-icon>
+                        </template>
+                      </div>
+                    </div>
+
+                    <!-- Item expanded detail -->
+                    <template if:true={item.isExpanded}>
+                      <div
+                        class="item-detail slds-p-around_small slds-p-left_x-large"
+                      >
+                        <!-- AI analysis callout -->
+                        <template if:true={item.hasAnalysis}>
+                          <div class={item.analysisCalloutClass}>
+                            <p class="slds-text-title_bold analysis-header">
+                              ⚡ AI Analysis &middot; {item.analysis.status}
+                            </p>
+                            <p class="slds-text-body_small slds-m-top_xx-small">
+                              {item.analysis.summary}
+                            </p>
+                            <template if:true={item.analysis.hasIssues}>
+                              <p
+                                class="slds-text-body_small slds-m-top_xx-small issue-text"
+                              >
+                                <strong>Issues found:</strong>
+                              </p>
+                              <p class="slds-text-body_small issue-text">
+                                {item.analysis.issues}
+                              </p>
+                            </template>
+                          </div>
+                        </template>
+                        <template if:false={item.hasAnalysis}>
+                          <p
+                            class="slds-text-body_small slds-text-color_weak slds-m-bottom_small not-analyzed-text"
+                          >
+                            ⚡ Not yet analyzed — click "Analyze All Documents"
+                            to generate insights.
+                          </p>
+                        </template>
+
+                        <!-- View Document button -->
+                        <template if:true={item.hasDocument}>
+                          <div class="slds-m-bottom_small">
+                            <lightning-button
+                              label="View Document"
+                              icon-name="utility:file"
+                              variant="neutral"
+                              data-id={item.id}
+                              data-docid={item.contentDocumentId}
+                              data-doctitle={item.documentTypeName}
+                              onclick={handleViewDocument}
+                            >
+                            </lightning-button>
+                          </div>
+                        </template>
+
+                        <!-- Review actions -->
+                        <div
+                          class="slds-m-bottom_small review-actions slds-grid slds-grid_vertical-align-center"
+                        >
+                          <span class="slds-text-title_bold slds-m-right_small"
+                            >Review:</span
+                          >
+                          <lightning-button
+                            label="Approve"
+                            variant="success"
+                            data-id={item.id}
+                            data-action="Approved"
+                            onclick={handleReviewAction}
+                            class="slds-m-right_xx-small"
+                          >
+                          </lightning-button>
+                          <lightning-button
+                            label="Reject"
+                            variant="destructive-text"
+                            data-id={item.id}
+                            data-action="Rejected"
+                            onclick={handleReviewAction}
+                            class="slds-m-right_xx-small"
+                          >
+                          </lightning-button>
+                          <lightning-button
+                            label="Waive"
+                            variant="neutral"
+                            data-id={item.id}
+                            data-action="Waived"
+                            onclick={handleReviewAction}
+                          >
+                          </lightning-button>
+                        </div>
+
+                        <!-- Rejection reason textarea (shown when Reject clicked) -->
+                        <template if:true={item.showRejectionReason}>
+                          <div class="slds-m-bottom_small">
+                            <lightning-textarea
+                              label="Rejection Reason"
+                              placeholder="Describe why this document is being rejected..."
+                              value={item.pendingRejectionReason}
+                              data-id={item.id}
+                              onchange={handleRejectionReasonChange}
+                            >
+                            </lightning-textarea>
+                            <div class="slds-m-top_x-small">
+                              <lightning-button
+                                label="Confirm Rejection"
+                                variant="destructive"
+                                data-id={item.id}
+                                onclick={handleConfirmRejection}
+                                class="slds-m-right_x-small"
+                              >
+                              </lightning-button>
+                              <lightning-button
+                                label="Cancel"
+                                variant="neutral"
+                                data-id={item.id}
+                                onclick={handleCancelRejection}
+                              >
+                              </lightning-button>
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- Notes -->
+                        <lightning-textarea
+                          label="Notes"
+                          value={item.notes}
+                          placeholder="Add notes..."
+                          data-id={item.id}
+                          onblur={handleNotesSave}
+                          class="slds-m-bottom_small"
+                        >
+                        </lightning-textarea>
+
+                        <!-- Metadata -->
+                        <div class="slds-grid slds-m-top_x-small metadata-row">
+                          <div class="slds-col">
+                            <p class="slds-text-title_caps">Due Date</p>
+                            <p class="slds-text-body_small">{item.dueDate}</p>
+                          </div>
+                          <div class="slds-col">
+                            <p class="slds-text-title_caps">Submitted</p>
+                            <p class="slds-text-body_small">
+                              {item.submittedDate}
+                            </p>
+                          </div>
+                          <div class="slds-col">
+                            <p class="slds-text-title_caps">Reviewer</p>
+                            <p class="slds-text-body_small">
+                              {item.reviewerName}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </template>
+      </template>
+
+      <!-- Empty state -->
+      <template if:false={hasChecklists}>
+        <div class="slds-align_absolute-center slds-p-around_large">
+          <div class="slds-text-align_center">
+            <lightning-icon
+              icon-name="utility:file"
+              size="large"
+              class="slds-m-bottom_small"
+            ></lightning-icon>
+            <p class="slds-text-body_regular slds-text-color_weak">
+              No document checklists found for this case.
+            </p>
+          </div>
+        </div>
+      </template>
+    </div>
+  </lightning-card>
+
+  <!-- Document Preview Modal -->
+  <template if:true={showDocumentModal}>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="modal-heading"
+      class="slds-modal slds-fade-in-open"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            title="Close"
+            onclick={handleCloseModal}
+          >
+            <lightning-icon
+              icon-name="utility:close"
+              size="small"
+              alternative-text="Close"
+            ></lightning-icon>
+          </button>
+          <h2 id="modal-heading" class="slds-modal__title slds-hyphenate">
+            {modalDocumentTitle}
+          </h2>
+        </header>
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          style="min-height: 500px"
+        >
+          <iframe
+            src={modalFileUrl}
+            title={modalDocumentTitle}
+            width="100%"
+            height="580px"
+            frameborder="0"
+          >
+          </iframe>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button
+            label="Close"
+            variant="neutral"
+            onclick={handleCloseModal}
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

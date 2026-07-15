@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <label>Category</label>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Legal &amp; Entity</fullName><default
+        >false</default><label>Legal &amp; Entity</label></value>
+            <value><fullName>Compliance &amp; Regulatory</fullName><default
+        >false</default><label>Compliance &amp; Regulatory</label></value>
+            <value><fullName>Authorized Traders</fullName><default
+        >false</default><label>Authorized Traders</label></value>
+            <value><fullName>Financial</fullName><default>false</default><label
+        >Financial</label></value>
+            <value><fullName>Other</fullName><default>false</default><label
+        >Other</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
