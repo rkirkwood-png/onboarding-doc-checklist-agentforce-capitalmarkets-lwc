@@ -185,6 +185,74 @@ private class CapDocumentChecklistControllerTest {
   // ─── parseResponse (via analyzeDocuments with mock) ──────────────────────
 
   @IsTest
+  static void testBuildPromptInputs_usesPromptBuilderInputContract() {
+    Map<String, ConnectApi.WrappedValue> inputs = CapDocumentChecklistController.buildPromptInputs(
+      '069000000000001',
+      'Certificate of Incorporation',
+      'Upload a current certificate.'
+    );
+
+    Assert.isTrue(
+      inputs.containsKey('Input:Document'),
+      'Document input should use the Prompt Builder Input: prefix'
+    );
+    Assert.isTrue(
+      inputs.containsKey('Input:Document_Type_Name'),
+      'Document type input should use the Prompt Builder Input: prefix'
+    );
+    Assert.isTrue(
+      inputs.containsKey('Input:Document_Instructions'),
+      'Instructions input should use the Prompt Builder Input: prefix'
+    );
+
+    Map<String, String> documentValue = (Map<String, String>) inputs.get(
+        'Input:Document'
+      )
+      .value;
+    Assert.areEqual('069000000000001', documentValue.get('id'));
+    Assert.areEqual('ContentDocument', documentValue.get('type'));
+  }
+
+  @IsTest
+  static void testPromptApplicationName_usesRegisteredInvocableApp() {
+    Assert.areEqual(
+      'PromptTemplateGenerationsInvocable',
+      CapDocumentChecklistController.PROMPT_APPLICATION_NAME,
+      'Prompt Template invocations must use a registered AI application name'
+    );
+  }
+
+  @IsTest
+  static void testGetFilePreviewInfo_returnsLatestVersion() {
+    ContentVersion version = new ContentVersion(
+      Title = 'Preview Test',
+      PathOnClient = 'PreviewTest.pdf',
+      VersionData = Blob.valueOf('preview test content')
+    );
+    insert version;
+
+    ContentVersion insertedVersion = [
+      SELECT Id, ContentDocumentId, FileExtension, Title
+      FROM ContentVersion
+      WHERE Id = :version.Id
+    ];
+
+    Test.startTest();
+    CapDocumentChecklistController.FilePreviewInfo result = CapDocumentChecklistController.getFilePreviewInfo(
+      insertedVersion.ContentDocumentId
+    );
+    Test.stopTest();
+
+    Assert.areEqual(
+      insertedVersion.ContentDocumentId,
+      result.contentDocumentId
+    );
+    Assert.areEqual(insertedVersion.Id, result.contentVersionId);
+    Assert.areEqual('pdf', result.fileExtension);
+    Assert.areEqual('Preview Test', result.title);
+  }
+
+  @IsTest
   static void testAnalyzeDocuments_skipsItemsWithNoDocument() {
     Onboarding_Document_Checklist_Item__c itemNoDoc = [
       SELECT Id

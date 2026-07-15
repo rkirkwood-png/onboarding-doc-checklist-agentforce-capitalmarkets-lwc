@@ -115,23 +115,26 @@ String docId = '069XXXXXXXXXXXX';
 
 Map<String, ConnectApi.WrappedValue> inputs = new Map<String, ConnectApi.WrappedValue>();
 ConnectApi.WrappedValue docVal = new ConnectApi.WrappedValue();
-docVal.value = docId;
-inputs.put('Document', docVal);
+docVal.value = new Map<String, String>{
+    'id' => docId,
+    'type' => 'ContentDocument'
+};
+inputs.put('Input:Document', docVal);
 
 ConnectApi.WrappedValue typeVal = new ConnectApi.WrappedValue();
 typeVal.value = 'KYC Customer Identification Form';
-inputs.put('Document_Type_Name', typeVal);
+inputs.put('Input:Document_Type_Name', typeVal);
 
 ConnectApi.WrappedValue instrVal = new ConnectApi.WrappedValue();
 instrVal.value = 'Complete all sections including beneficial ownership.';
-inputs.put('Document_Instructions', instrVal);
+inputs.put('Input:Document_Instructions', instrVal);
 
 ConnectApi.EinsteinPromptTemplateGenerationsInput input =
     new ConnectApi.EinsteinPromptTemplateGenerationsInput();
 input.isPreview = false;
 input.inputParams = inputs;
 input.additionalConfig = new ConnectApi.EinsteinLLMAdditionalConfigInput();
-input.additionalConfig.applicationName = 'PromptTemplateGenerationsInvocations';
+input.additionalConfig.applicationName = 'PromptTemplateGenerationsInvocable';
 
 ConnectApi.EinsteinPromptTemplateGenerationsRepresentation response =
     ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('CAP_Document_Analysis', input);

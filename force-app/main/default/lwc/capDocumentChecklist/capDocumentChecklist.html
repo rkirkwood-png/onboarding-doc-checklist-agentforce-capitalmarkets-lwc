@@ -1,6 +1,6 @@
 <template>
   <lightning-card title="Document Checklist" icon-name="standard:document">
-    <div slot="actions">
+    <div slot="actions" class="analysis-action-stack">
       <lightning-button
         label="⚡ Analyze All Documents"
         variant="brand"
@@ -9,6 +9,7 @@
         title={analyzeButtonTitle}
       >
       </lightning-button>
+      <p class="analysis-timestamp">{lastAnalyzedLabel}</p>
     </div>
 
     <div class="slds-p-horizontal_medium slds-p-bottom_medium">
@@ -70,6 +71,26 @@
                 <span class={checklist.progressPillClass}
                   >{checklist.progressLabel}</span
                 >
+                <template if:true={checklist.hasAiSummary}>
+                  <span class={checklist.aiSummaryBadgeClass}>
+                    <lightning-icon
+                      icon-name={checklist.aiSummaryIconName}
+                      size="xx-small"
+                      class="slds-m-right_xx-small"
+                    ></lightning-icon>
+                    {checklist.aiSummaryLabel}
+                  </span>
+                </template>
+                <template if:true={checklist.missingCount}>
+                  <span class="slds-badge missing-required-badge">
+                    <lightning-icon
+                      icon-name="utility:warning"
+                      size="xx-small"
+                      class="slds-m-right_xx-small"
+                    ></lightning-icon>
+                    {checklist.missingLabel}
+                  </span>
+                </template>
                 <span
                   class={checklist.statusBadgeClass}
                   style="margin-left: 6px"
@@ -163,9 +184,11 @@
                           </p>
                         </template>
 
-                        <!-- View Document button -->
+                        <!-- Document actions -->
                         <template if:true={item.hasDocument}>
-                          <div class="slds-m-bottom_small">
+                          <div
+                            class="slds-m-bottom_small document-actions slds-grid slds-grid_vertical-align-center"
+                          >
                             <lightning-button
                               label="View Document"
                               icon-name="utility:file"
@@ -176,6 +199,27 @@
                               onclick={handleViewDocument}
                             >
                             </lightning-button>
+                            <lightning-button
+                              label="Analyze This Document"
+                              icon-name="utility:refresh"
+                              variant="neutral"
+                              data-id={item.id}
+                              onclick={handleAnalyzeItem}
+                              disabled={isAnalyzing}
+                            >
+                            </lightning-button>
+                            <a
+                              href={item.itemRecordUrl}
+                              target="_blank"
+                              class="item-record-link"
+                            >
+                              <lightning-icon
+                                icon-name="utility:new_window"
+                                size="xx-small"
+                                class="slds-m-right_xx-small"
+                              ></lightning-icon>
+                              Open Item Record
+                            </a>
                           </div>
                         </template>
 
@@ -324,25 +368,63 @@
               size="small"
               alternative-text="Close"
             ></lightning-icon>
+            <span class="slds-assistive-text">Close</span>
           </button>
           <h2 id="modal-heading" class="slds-modal__title slds-hyphenate">
             {modalDocumentTitle}
           </h2>
         </header>
         <div
-          class="slds-modal__content slds-p-around_medium"
-          style="min-height: 500px"
+          class="slds-modal__content slds-p-around_medium preview-modal-body"
         >
-          <iframe
-            src={modalFileUrl}
-            title={modalDocumentTitle}
-            width="100%"
-            height="580px"
-            frameborder="0"
-          >
-          </iframe>
+          <template if:true={isModalPreviewLoading}>
+            <div class="slds-align_absolute-center preview-loading">
+              <lightning-spinner
+                alternative-text="Loading file preview..."
+                size="small"
+              ></lightning-spinner>
+            </div>
+          </template>
+
+          <template if:true={modalPreviewError}>
+            <div
+              class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small"
+              role="alert"
+            >
+              <lightning-icon
+                icon-name="utility:warning"
+                size="x-small"
+                class="slds-m-right_x-small"
+              ></lightning-icon>
+              <span>{modalPreviewError}</span>
+            </div>
+          </template>
+
+          <template if:true={modalFileUrl}>
+            <div class="preview-image-wrap">
+              <img
+                src={modalFileUrl}
+                alt={modalDocumentTitle}
+                class="preview-image"
+              />
+            </div>
+          </template>
         </div>
         <footer class="slds-modal__footer">
+          <a
+            href={modalFullPreviewUrl}
+            target="_blank"
+            class="slds-button slds-button_neutral"
+          >
+            Open Full Preview
+          </a>
+          <a
+            href={modalDownloadUrl}
+            target="_blank"
+            class="slds-button slds-button_neutral"
+          >
+            Download
+          </a>
           <lightning-button
             label="Close"
             variant="neutral"

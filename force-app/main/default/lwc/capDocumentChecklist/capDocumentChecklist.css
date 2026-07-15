@@ -1,5 +1,15 @@
 /* ── Checklist group ─────────────────────────────────────────────────── */
 
+.analysis-action-stack {
+  text-align: right;
+}
+
+.analysis-timestamp {
+  margin-top: 4px;
+  color: #706e6b;
+  font-size: 11px;
+}
+
 .checklist-group {
   border: 1px solid #dddbda;
   border-radius: 4px;
@@ -36,6 +46,22 @@
 }
 
 .progress-pill--complete {
+  background: #cdefc4;
+  color: #2e844a;
+}
+
+.ai-summary-badge,
+.missing-required-badge {
+  margin-left: 6px;
+}
+
+.ai-summary-badge--nigo,
+.missing-required-badge {
+  background: #fedad9;
+  color: #8e0b0b;
+}
+
+.ai-summary-badge--clear {
   background: #cdefc4;
   color: #2e844a;
 }
@@ -171,6 +197,44 @@
 .review-actions {
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.document-actions {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item-record-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ── File preview modal ──────────────────────────────────────────────── */
+
+.preview-modal-body {
+  min-height: 500px;
+}
+
+.preview-loading {
+  min-height: 420px;
+}
+
+.preview-image-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 500px;
+  background: #f3f2f2;
+  border: 1px solid #dddbda;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 680px;
+  object-fit: contain;
 }
 
 /* ── Metadata row ────────────────────────────────────────────────────── */

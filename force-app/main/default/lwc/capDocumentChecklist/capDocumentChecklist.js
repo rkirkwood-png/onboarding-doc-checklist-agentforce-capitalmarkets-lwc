@@ -3,6 +3,7 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { refreshApex } from "@salesforce/apex";
 import getChecklistData from "@salesforce/apex/CapDocumentChecklistController.getChecklistData";
 import analyzeDocuments from "@salesforce/apex/CapDocumentChecklistController.analyzeDocuments";
+import getFilePreviewInfo from "@salesforce/apex/CapDocumentChecklistController.getFilePreviewInfo";
 import updateItemReview from "@salesforce/apex/CapDocumentChecklistController.updateItemReview";
 
 const STATUS_BADGE = {
@@ -24,10 +25,15 @@ export default class CapDocumentChecklist extends LightningElement {
   @track isAnalyzing = false;
   @track showDocumentModal = false;
   @track errorMessage = null;
+  @track lastAnalyzedAt = null;
 
   modalDocumentId = null;
   modalDocumentTitle = "";
   modalFileUrl = "";
+  modalDownloadUrl = "";
+  modalFullPreviewUrl = "";
+  modalPreviewError = null;
+  isModalPreviewLoading = false;
 
   _wiredResult;
   _analysisMap = {};
@@ -61,12 +67,38 @@ export default class CapDocumentChecklist extends LightningElement {
     const approved = cl.Items_Approved__c || 0;
     const total = cl.Items_Total__c || 0;
     const allDone = total > 0 && approved === total;
+    const items = (cl.Checklist_Items__r || []).map((item) =>
+      this._mapItem(item)
+    );
+    const missingCount = items.filter(
+      (item) => item.isRequired && !item.hasDocument
+    ).length;
+    const analyzedCount = items.filter((item) => item.hasAnalysis).length;
+    const nigoCount = items.filter((item) => item.hasFlag).length;
+    const hasAiSummary = analyzedCount > 0;
+    const hasNigoFlags = nigoCount > 0;
+
     return {
       id: cl.Id,
       category: cl.Category__c || "Uncategorized",
       status: cl.Status__c || "Not Started",
       itemsApproved: approved,
       itemsTotal: total,
+      missingCount,
+      missingLabel:
+        missingCount === 1
+          ? "1 required doc missing"
+          : `${missingCount} required docs missing`,
+      analyzedCount,
+      nigoCount,
+      hasAiSummary,
+      aiSummaryLabel: hasNigoFlags
+        ? `NIGO Flag (${nigoCount}/${analyzedCount})`
+        : `AI Clear (0/${analyzedCount})`,
+      aiSummaryBadgeClass: hasNigoFlags
+        ? "slds-badge ai-summary-badge ai-summary-badge--nigo slds-m-left_x-small"
+        : "slds-badge ai-summary-badge ai-summary-badge--clear slds-m-left_x-small",
+      aiSummaryIconName: hasNigoFlags ? "utility:warning" : "utility:success",
       isExpanded: expanded,
       chevronIcon: expanded ? "utility:chevrondown" : "utility:chevronright",
       progressLabel: `${approved} / ${total} Approved`,
@@ -74,7 +106,7 @@ export default class CapDocumentChecklist extends LightningElement {
         ? "progress-pill progress-pill--complete"
         : "progress-pill",
       statusBadgeClass: STATUS_BADGE[cl.Status__c] || "slds-badge",
-      items: (cl.Checklist_Items__r || []).map((item) => this._mapItem(item))
+      items
     };
   }
 
@@ -82,6 +114,7 @@ export default class CapDocumentChecklist extends LightningElement {
     const expanded = this._expandedItems.has(item.Id);
     const analysis = this._analysisMap[item.Id] || null;
     const hasDocument = !!item.Content_Document_Id__c;
+    const hasFlag = this._isNigoAnalysis(analysis);
     const showRejection = this._showRejectionFor.has(item.Id);
 
     return {
@@ -104,7 +137,8 @@ export default class CapDocumentChecklist extends LightningElement {
       analysis,
       hasDocument,
       hasAnalysis: !!analysis,
-      hasFlag: analysis ? analysis.hasIssues : false,
+      hasFlag,
+      itemRecordUrl: `/${item.Id}`,
       chevronIcon: expanded ? "utility:chevrondown" : "utility:chevronright",
       submissionBadgeClass: hasDocument
         ? "slds-badge slds-badge--submitted"
@@ -149,6 +183,17 @@ export default class CapDocumentChecklist extends LightningElement {
       : "Run Einstein AI analysis on all submitted documents";
   }
 
+  get lastAnalyzedLabel() {
+    if (!this.lastAnalyzedAt) {
+      return "Not analyzed yet";
+    }
+
+    return `Last analyzed: ${new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(this.lastAnalyzedAt)}`;
+  }
+
   // ─── Accordion handlers ───────────────────────────────────────────────────
 
   handleToggleChecklist(event) {
@@ -182,23 +227,33 @@ export default class CapDocumentChecklist extends LightningElement {
 
     if (itemIds.length === 0) return;
 
-    this.isAnalyzing = true;
-    this.errorMessage = null;
-
     try {
-      const results = await analyzeDocuments({ itemIds });
-      Object.assign(this._analysisMap, results);
-      this._rebuildState();
+      const analyzedCount = await this._analyzeItems(itemIds);
+      this.lastAnalyzedAt = new Date();
       this._showToast(
         "Analysis Complete",
-        `${Object.keys(results).length} document(s) analyzed.`,
+        `${analyzedCount} document(s) analyzed.`,
         "success"
       );
     } catch (error) {
-      this.errorMessage = "Einstein analysis failed. Please try again.";
-      console.error("analyzeDocuments error:", error);
-    } finally {
-      this.isAnalyzing = false;
+      this._handleAnalysisError(error);
+    }
+  }
+
+  async handleAnalyzeItem(event) {
+    event.stopPropagation();
+    const itemId = event.currentTarget.dataset.id;
+    if (!itemId) return;
+
+    try {
+      await this._analyzeItems([itemId]);
+      this._showToast(
+        "Analysis Complete",
+        "Document analysis has been refreshed.",
+        "success"
+      );
+    } catch (error) {
+      this._handleAnalysisError(error);
     }
   }
 
@@ -279,12 +334,30 @@ export default class CapDocumentChecklist extends LightningElement {
 
   // ─── Document modal ───────────────────────────────────────────────────────
 
-  handleViewDocument(event) {
+  async handleViewDocument(event) {
     event.stopPropagation();
     this.modalDocumentId = event.currentTarget.dataset.docid;
     this.modalDocumentTitle = event.currentTarget.dataset.doctitle;
-    this.modalFileUrl = `/sfc/servlet.shepherd/document/download/${this.modalDocumentId}`;
+    this.modalFileUrl = "";
+    this.modalDownloadUrl = "";
+    this.modalFullPreviewUrl = `/sfc/servlet.shepherd/document/preview/${this.modalDocumentId}`;
+    this.modalPreviewError = null;
+    this.isModalPreviewLoading = true;
     this.showDocumentModal = true;
+
+    try {
+      const previewInfo = await getFilePreviewInfo({
+        contentDocumentId: this.modalDocumentId
+      });
+      this.modalFileUrl = this._buildRenditionUrl(previewInfo);
+      this.modalDownloadUrl = `/sfc/servlet.shepherd/version/download/${previewInfo.contentVersionId}`;
+    } catch (error) {
+      this.modalPreviewError =
+        error?.body?.message ||
+        "Preview could not be loaded. Open the full preview instead.";
+    } finally {
+      this.isModalPreviewLoading = false;
+    }
   }
 
   handleCloseModal() {
@@ -292,6 +365,10 @@ export default class CapDocumentChecklist extends LightningElement {
     this.modalDocumentId = null;
     this.modalDocumentTitle = "";
     this.modalFileUrl = "";
+    this.modalDownloadUrl = "";
+    this.modalFullPreviewUrl = "";
+    this.modalPreviewError = null;
+    this.isModalPreviewLoading = false;
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -300,6 +377,37 @@ export default class CapDocumentChecklist extends LightningElement {
     if (this._wiredResult?.data) {
       this._buildState(this._wiredResult.data);
     }
+  }
+
+  async _analyzeItems(itemIds) {
+    this.isAnalyzing = true;
+    this.errorMessage = null;
+
+    try {
+      const results = await analyzeDocuments({ itemIds });
+      Object.assign(this._analysisMap, results);
+      this._rebuildState();
+      return Object.keys(results).length;
+    } finally {
+      this.isAnalyzing = false;
+    }
+  }
+
+  _handleAnalysisError(error) {
+    this.errorMessage = "Einstein analysis failed. Please try again.";
+    console.error("analyzeDocuments error:", error);
+  }
+
+  _isNigoAnalysis(analysis) {
+    if (!analysis) return false;
+    return (
+      analysis.hasIssues ||
+      (analysis.status || "").toUpperCase() === "ACTION REQUIRED"
+    );
+  }
+
+  _buildRenditionUrl(previewInfo) {
+    return `/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&versionId=${previewInfo.contentVersionId}`;
   }
 
   _showToast(title, message, variant) {
