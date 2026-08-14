@@ -1,0 +1,981 @@
+{
+  "dataSource": {
+    "type": "DataRaptor",
+    "value": {
+      "dsDelay": "",
+      "bundle": "DocumentChecklistGather",
+      "bundleType": "",
+      "inputMap": {
+        "recordId": "{recordId}"
+      },
+      "jsonMap": "{\"recordId\": \"{recordId}\"}"
+    },
+    "orderBy": {
+      "name": "DocumentTypeName",
+      "isReverse": ""
+    },
+    "contextVariables": [
+      {
+        "name": "recordId",
+        "val": "500ak00002rkaqXAAQ",
+        "id": 1
+      }
+    ]
+  },
+  "title": "MADocumentChecklist2",
+  "enableLwc": true,
+  "isFlex": true,
+  "theme": "slds",
+  "selectableMode": "none",
+  "lwc": {},
+  "globalCSS": "",
+  "customCSSResourcePath": "",
+  "xmlObject": {
+    "targetConfigs": "PHRhcmdldENvbmZpZyB0YXJnZXRzPSJsaWdodG5pbmdfX0FwcFBhZ2UiPgogICAgICAgICAgICAgICAgICAgIDxwcm9wZXJ0eSBuYW1lPSJkZWJ1ZyIgdHlwZT0iQm9vbGVhbiIvPgogICAgICAgICAgICAgICAgICAgIDxwcm9wZXJ0eSBuYW1lPSJyZWNvcmRJZCIgdHlwZT0iU3RyaW5nIi8+CiAgICAgICAgICAgICAgICA8L3RhcmdldENvbmZpZz4KICAgICAgICAgICAgICAgIDx0YXJnZXRDb25maWcgdGFyZ2V0cz0ibGlnaHRuaW5nX19SZWNvcmRQYWdlIj4KICAgICAgICAgICAgICAgICAgICA8cHJvcGVydHkgbmFtZT0iZGVidWciIHR5cGU9IkJvb2xlYW4iLz4KICAgICAgICAgICAgICAgIDwvdGFyZ2V0Q29uZmlnPg==",
+    "targets": {
+      "target": [
+        "lightning__RecordPage",
+        "lightning__AppPage",
+        "lightning__HomePage"
+      ]
+    },
+    "apiVersion": 61,
+    "description": "",
+    "masterLabel": "MADocumentChecklist2"
+  },
+  "xmlJson": [
+    {
+      "@attributes": {
+        "targets": "lightning__AppPage"
+      },
+      "property": [
+        {
+          "@attributes": {
+            "name": "debug",
+            "type": "Boolean"
+          }
+        },
+        {
+          "@attributes": {
+            "name": "recordId",
+            "type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "@attributes": {
+        "targets": "lightning__RecordPage"
+      },
+      "property": [
+        {
+          "@attributes": {
+            "name": "debug",
+            "type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "multilanguageSupport": false,
+  "events": [],
+  "sessionVars": [],
+  "states": [
+    {
+      "fields": [],
+      "conditions": {
+        "id": "s0",
+        "isParent": true,
+        "group": []
+      },
+      "definedActions": {
+        "actions": []
+      },
+      "name": "Active",
+      "isSmartAction": false,
+      "smartAction": {},
+      "styleObject": {
+        "padding": [],
+        "margin": [],
+        "class": "",
+        "sizeClass": "slds-size_12-of-12 ",
+        "background": {
+          "color": "",
+          "image": "",
+          "size": "",
+          "repeat": "",
+          "position": ""
+        },
+        "size": {
+          "isResponsive": false,
+          "default": "12"
+        },
+        "container": {
+          "class": "slds-card"
+        },
+        "border": {
+          "type": "",
+          "width": "",
+          "color": "",
+          "radius": "",
+          "style": ""
+        },
+        "elementStyleProperties": {},
+        "text": {
+          "align": "",
+          "color": ""
+        },
+        "inlineStyle": "width:100%;",
+        "style": "width:100%;"
+      },
+      "components": {
+        "layer-0": {
+          "children": [
+            {
+              "name": "ItemRow",
+              "element": "block",
+              "size": {
+                "isResponsive": true,
+                "default": "12",
+                "large": "12",
+                "medium": "12",
+                "small": "12"
+              },
+              "stateIndex": 0,
+              "class": "slds-col ",
+              "type": "block",
+              "property": {
+                "label": "ItemRow",
+                "collapsible": false,
+                "record": "{record}",
+                "collapsedByDefault": false,
+                "card": "{card}"
+              },
+              "elementLabel": "ItemRow-0",
+              "styleObjects": [
+                {
+                  "key": 0,
+                  "conditions": "default",
+                  "styleObject": {
+                    "padding": [],
+                    "margin": [],
+                    "class": "",
+                    "sizeClass": "slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-size_12-of-12 ",
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "size": {
+                      "isResponsive": true,
+                      "default": "12",
+                      "large": "12",
+                      "medium": "12",
+                      "small": "12"
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "border-bottom:1px solid #f3f2f2;width:100%;",
+                    "style": "      \n         border-bottom:1px solid #f3f2f2;width:100%;"
+                  },
+                  "label": "Default",
+                  "name": "Default",
+                  "conditionString": "",
+                  "draggable": false
+                }
+              ],
+              "datasourceKey": "state0element0",
+              "uKey": "1753400000000-100",
+              "styleObject": {
+                "padding": [],
+                "margin": [],
+                "class": "",
+                "sizeClass": "slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-size_12-of-12 ",
+                "background": {
+                  "color": "",
+                  "image": "",
+                  "size": "",
+                  "repeat": "",
+                  "position": ""
+                },
+                "size": {
+                  "isResponsive": true,
+                  "default": "12",
+                  "large": "12",
+                  "medium": "12",
+                  "small": "12"
+                },
+                "container": {
+                  "class": ""
+                },
+                "border": {
+                  "type": "",
+                  "width": "",
+                  "color": "",
+                  "radius": "",
+                  "style": ""
+                },
+                "elementStyleProperties": {},
+                "text": {
+                  "align": "",
+                  "color": ""
+                },
+                "inlineStyle": "border-bottom:1px solid #f3f2f2;width:100%;",
+                "style": "      \n         border-bottom:1px solid #f3f2f2;width:100%;"
+              },
+              "children": [
+                {
+                  "name": "NameBlock",
+                  "element": "outputField",
+                  "size": {
+                    "isResponsive": true,
+                    "default": "4",
+                    "large": "4",
+                    "medium": "4",
+                    "small": "4"
+                  },
+                  "stateIndex": 0,
+                  "class": "slds-col ",
+                  "type": "outputField",
+                  "property": {
+                    "record": "{record}",
+                    "mergeField": "<p style=\"font-size:10px;color:#706e6b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;\">{DocumentTypeName}</p><p style=\"font-size:13px;font-weight:500;\">{Name}</p>",
+                    "type": "text",
+                    "card": "{card}",
+                    "label": "",
+                    "placeholder": "",
+                    "showLabel": false
+                  },
+                  "elementLabel": "ItemRow-0-NameBlock-0",
+                  "styleObjects": [
+                    {
+                      "key": 0,
+                      "conditions": "default",
+                      "styleObject": {
+                        "padding": [],
+                        "margin": [],
+                        "class": "",
+                        "sizeClass": "slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-small-size_4-of-12 slds-size_4-of-12 ",
+                        "background": {
+                          "color": "",
+                          "image": "",
+                          "size": "",
+                          "repeat": "",
+                          "position": ""
+                        },
+                        "size": {
+                          "isResponsive": true,
+                          "default": "4",
+                          "large": "4",
+                          "medium": "4",
+                          "small": "4"
+                        },
+                        "container": {
+                          "class": ""
+                        },
+                        "border": {
+                          "type": "",
+                          "width": "",
+                          "color": "",
+                          "radius": "",
+                          "style": ""
+                        },
+                        "elementStyleProperties": {},
+                        "text": {
+                          "align": "",
+                          "color": ""
+                        },
+                        "inlineStyle": "padding-right:8px;",
+                        "style": "      \n         padding-right:8px;"
+                      },
+                      "label": "Default",
+                      "name": "Default",
+                      "conditionString": "",
+                      "draggable": false
+                    }
+                  ],
+                  "datasourceKey": "state0element0block_element0",
+                  "key": "element_element_block_0_0_outputField_0_0",
+                  "parentElementKey": "element_block_0_0",
+                  "styleObject": {
+                    "padding": [],
+                    "margin": [],
+                    "class": "",
+                    "sizeClass": "slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-small-size_4-of-12 slds-size_4-of-12 ",
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "size": {
+                      "isResponsive": true,
+                      "default": "4",
+                      "large": "4",
+                      "medium": "4",
+                      "small": "4"
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "padding-right:8px;",
+                    "style": "      \n         padding-right:8px;"
+                  },
+                  "uKey": "1786043533884-43"
+                },
+                {
+                  "name": "RequiredBadge",
+                  "element": "outputField",
+                  "size": {
+                    "isResponsive": true,
+                    "default": "1",
+                    "large": "1",
+                    "medium": "1",
+                    "small": "1"
+                  },
+                  "stateIndex": 0,
+                  "class": "slds-col ",
+                  "type": "outputField",
+                  "property": {
+                    "record": "{record}",
+                    "mergeField": "<span style=\"background:#fce588;color:#7a4f00;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;white-space:nowrap;display:inline-block;\">Required</span>",
+                    "type": "text",
+                    "card": "{card}",
+                    "label": "",
+                    "placeholder": "",
+                    "showLabel": false,
+                    "data-conditions": {
+                      "id": "cond-req",
+                      "isParent": true,
+                      "group": [
+                        {
+                          "id": "r1",
+                          "field": "IsRequired",
+                          "operator": "==",
+                          "value": "true",
+                          "type": "custom",
+                          "hasMergeField": false
+                        }
+                      ]
+                    }
+                  },
+                  "elementLabel": "ItemRow-0-RequiredBadge-1",
+                  "styleObjects": [
+                    {
+                      "key": 0,
+                      "conditions": "default",
+                      "styleObject": {
+                        "padding": [],
+                        "margin": [],
+                        "class": "",
+                        "sizeClass": "slds-large-size_1-of-12 slds-medium-size_1-of-12 slds-small-size_1-of-12 slds-size_1-of-12 ",
+                        "background": {
+                          "color": "",
+                          "image": "",
+                          "size": "",
+                          "repeat": "",
+                          "position": ""
+                        },
+                        "size": {
+                          "isResponsive": true,
+                          "default": "1",
+                          "large": "1",
+                          "medium": "1",
+                          "small": "1"
+                        },
+                        "container": {
+                          "class": ""
+                        },
+                        "border": {
+                          "type": "",
+                          "width": "",
+                          "color": "",
+                          "radius": "",
+                          "style": ""
+                        },
+                        "elementStyleProperties": {},
+                        "text": {
+                          "align": "",
+                          "color": ""
+                        },
+                        "inlineStyle": "white-space:nowrap;flex-shrink:0;",
+                        "style": "      \n         white-space:nowrap;flex-shrink:0;"
+                      },
+                      "label": "Default",
+                      "name": "Default",
+                      "conditionString": "",
+                      "draggable": false
+                    }
+                  ],
+                  "datasourceKey": "state0element0block_element1",
+                  "key": "element_element_block_0_0_outputField_1_0",
+                  "parentElementKey": "element_block_0_0",
+                  "styleObject": {
+                    "padding": [],
+                    "margin": [],
+                    "class": "",
+                    "sizeClass": "slds-large-size_1-of-12 slds-medium-size_1-of-12 slds-small-size_1-of-12 slds-size_1-of-12 ",
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "size": {
+                      "isResponsive": true,
+                      "default": "1",
+                      "large": "1",
+                      "medium": "1",
+                      "small": "1"
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "white-space:nowrap;flex-shrink:0;",
+                    "style": "      \n         white-space:nowrap;flex-shrink:0;"
+                  },
+                  "uKey": "1786043533884-24"
+                },
+                {
+                  "name": "StatusBadge",
+                  "element": "outputField",
+                  "size": {
+                    "isResponsive": true,
+                    "default": "1",
+                    "large": "1",
+                    "medium": "1",
+                    "small": "1"
+                  },
+                  "stateIndex": 0,
+                  "class": "slds-col ",
+                  "type": "outputField",
+                  "property": {
+                    "record": "{record}",
+                    "mergeField": "<span style=\"padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#e4e4e4;color:#3e3e3c;white-space:nowrap;display:inline-block;\">{Status}</span>",
+                    "type": "text",
+                    "card": "{card}",
+                    "label": "",
+                    "placeholder": "",
+                    "showLabel": false
+                  },
+                  "elementLabel": "ItemRow-0-StatusBadge-2",
+                  "styleObjects": [
+                    {
+                      "key": 0,
+                      "conditions": "default",
+                      "styleObject": {
+                        "padding": [],
+                        "margin": [],
+                        "class": "",
+                        "sizeClass": "slds-large-size_1-of-12 slds-medium-size_1-of-12 slds-small-size_1-of-12 slds-size_1-of-12 ",
+                        "background": {
+                          "color": "",
+                          "image": "",
+                          "size": "",
+                          "repeat": "",
+                          "position": ""
+                        },
+                        "size": {
+                          "isResponsive": true,
+                          "default": "1",
+                          "large": "1",
+                          "medium": "1",
+                          "small": "1"
+                        },
+                        "container": {
+                          "class": ""
+                        },
+                        "border": {
+                          "type": "",
+                          "width": "",
+                          "color": "",
+                          "radius": "",
+                          "style": ""
+                        },
+                        "elementStyleProperties": {},
+                        "text": {
+                          "align": "",
+                          "color": ""
+                        },
+                        "inlineStyle": "white-space:nowrap;flex-shrink:0;",
+                        "style": "      \n         white-space:nowrap;flex-shrink:0;"
+                      },
+                      "label": "Default",
+                      "name": "Default",
+                      "conditionString": "",
+                      "draggable": false
+                    }
+                  ],
+                  "datasourceKey": "state0element0block_element2",
+                  "key": "element_element_block_0_0_outputField_2_0",
+                  "parentElementKey": "element_block_0_0",
+                  "styleObject": {
+                    "padding": [],
+                    "margin": [],
+                    "class": "",
+                    "sizeClass": "slds-large-size_1-of-12 slds-medium-size_1-of-12 slds-small-size_1-of-12 slds-size_1-of-12 ",
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "size": {
+                      "isResponsive": true,
+                      "default": "1",
+                      "large": "1",
+                      "medium": "1",
+                      "small": "1"
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "white-space:nowrap;flex-shrink:0;",
+                    "style": "      \n         white-space:nowrap;flex-shrink:0;"
+                  },
+                  "uKey": "1786043533884-512"
+                },
+                {
+                  "name": "UploadDoc",
+                  "element": "action",
+                  "size": {
+                    "isResponsive": true,
+                    "default": "2",
+                    "large": "2",
+                    "medium": "2",
+                    "small": "2"
+                  },
+                  "stateIndex": 0,
+                  "class": "",
+                  "type": "action",
+                  "property": {
+                    "label": "Upload",
+                    "iconName": "utility:upload",
+                    "record": "{record}",
+                    "card": "{card}",
+                    "stateObj": "{record}",
+                    "actionList": [
+                      {
+                        "stateAction": {
+                          "id": "flex-action-1785860090472",
+                          "type": "OmniScript",
+                          "openUrlIn": "New Tab/Window",
+                          "layoutType": "lightning",
+                          "omniType": {
+                            "Name": "MarketAxess/UploadDocument/English",
+                            "Id": "0jNak000000PO8nEAG"
+                          },
+                          "tabLabel": "{Name}"
+                        },
+                        "key": "key-upload",
+                        "label": "Upload Document",
+                        "draggable": false,
+                        "isOpen": true,
+                        "actionIndex": 0,
+                        "contextId": "\\{Id}"
+                      }
+                    ],
+                    "showSpinner": "false",
+                    "flyoutChannel": "",
+                    "flyoutDetails": {}
+                  },
+                  "elementLabel": "ItemRow-0-UploadDoc-3",
+                  "styleObjects": [
+                    {
+                      "key": 0,
+                      "conditions": "default",
+                      "styleObject": {
+                        "padding": [],
+                        "margin": [],
+                        "class": "",
+                        "sizeClass": "slds-large-size_2-of-12 slds-medium-size_2-of-12 slds-small-size_2-of-12 slds-size_2-of-12 ",
+                        "background": {
+                          "color": "",
+                          "image": "",
+                          "size": "",
+                          "repeat": "",
+                          "position": ""
+                        },
+                        "size": {
+                          "isResponsive": true,
+                          "default": "2",
+                          "large": "2",
+                          "medium": "2",
+                          "small": "2"
+                        },
+                        "container": {
+                          "class": ""
+                        },
+                        "border": {
+                          "type": "",
+                          "width": "",
+                          "color": "",
+                          "radius": "",
+                          "style": ""
+                        },
+                        "elementStyleProperties": {},
+                        "text": {
+                          "align": "",
+                          "color": ""
+                        },
+                        "inlineStyle": "flex-shrink:0;",
+                        "style": "      \n         flex-shrink:0;"
+                      },
+                      "label": "Default",
+                      "name": "Default",
+                      "conditionString": "",
+                      "draggable": false
+                    }
+                  ],
+                  "datasourceKey": "state0element0block_element3",
+                  "key": "element_element_block_0_0_action_3_0",
+                  "parentElementKey": "element_block_0_0",
+                  "styleObject": {
+                    "padding": [],
+                    "margin": [],
+                    "class": "",
+                    "sizeClass": "slds-large-size_2-of-12 slds-medium-size_2-of-12 slds-small-size_2-of-12 slds-size_2-of-12 ",
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "size": {
+                      "isResponsive": true,
+                      "default": "2",
+                      "large": "2",
+                      "medium": "2",
+                      "small": "2"
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "flex-shrink:0;",
+                    "style": "      \n         flex-shrink:0;"
+                  },
+                  "uKey": "1786043533884-590"
+                },
+                {
+                  "name": "OpenRecord",
+                  "element": "action",
+                  "size": {
+                    "isResponsive": true,
+                    "default": "2",
+                    "large": "2",
+                    "medium": "2",
+                    "small": "2"
+                  },
+                  "stateIndex": 0,
+                  "class": "",
+                  "type": "action",
+                  "property": {
+                    "label": "Open",
+                    "iconName": "utility:new_window",
+                    "record": "{record}",
+                    "card": "{card}",
+                    "stateObj": "{record}",
+                    "actionList": [
+                      {
+                        "stateAction": {
+                          "id": "flex-action-1785859807221",
+                          "type": "Custom",
+                          "openUrlIn": "New Tab/Window",
+                          "targetType": "Record",
+                          "Record": {
+                            "targetName": "DocumentChecklistItem",
+                            "targetAction": "view",
+                            "targetId": "{Id}"
+                          }
+                        },
+                        "key": "key-open-record",
+                        "label": "Open Record",
+                        "draggable": true,
+                        "isOpen": true,
+                        "actionIndex": 0
+                      }
+                    ],
+                    "showSpinner": "false",
+                    "flyoutChannel": "",
+                    "flyoutDetails": {}
+                  },
+                  "elementLabel": "ItemRow-0-OpenRecord-4",
+                  "styleObjects": [
+                    {
+                      "key": 0,
+                      "conditions": "default",
+                      "styleObject": {
+                        "padding": [],
+                        "margin": [],
+                        "class": "",
+                        "sizeClass": "slds-large-size_2-of-12 slds-medium-size_2-of-12 slds-small-size_2-of-12 slds-size_2-of-12 ",
+                        "background": {
+                          "color": "",
+                          "image": "",
+                          "size": "",
+                          "repeat": "",
+                          "position": ""
+                        },
+                        "size": {
+                          "isResponsive": true,
+                          "default": "2",
+                          "large": "2",
+                          "medium": "2",
+                          "small": "2"
+                        },
+                        "container": {
+                          "class": ""
+                        },
+                        "border": {
+                          "type": "",
+                          "width": "",
+                          "color": "",
+                          "radius": "",
+                          "style": ""
+                        },
+                        "elementStyleProperties": {},
+                        "text": {
+                          "align": "",
+                          "color": ""
+                        },
+                        "inlineStyle": "flex-shrink:0;text-align:left;",
+                        "style": "      \n         flex-shrink:0;text-align:left;"
+                      },
+                      "label": "Default",
+                      "name": "Default",
+                      "conditionString": "",
+                      "draggable": false
+                    }
+                  ],
+                  "datasourceKey": "state0element0block_element4",
+                  "key": "element_element_block_0_0_action_4_0",
+                  "parentElementKey": "element_block_0_0",
+                  "styleObject": {
+                    "padding": [],
+                    "margin": [],
+                    "class": "",
+                    "sizeClass": "slds-large-size_2-of-12 slds-medium-size_2-of-12 slds-small-size_2-of-12 slds-size_2-of-12 ",
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "size": {
+                      "isResponsive": true,
+                      "default": "2",
+                      "large": "2",
+                      "medium": "2",
+                      "small": "2"
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "flex-shrink:0;text-align:left;",
+                    "style": "      \n         flex-shrink:0;text-align:left;"
+                  },
+                  "uKey": "1786043533884-366"
+                },
+                {
+                  "key": "element_element_block_0_0_customLwc_5_0",
+                  "name": "Custom LWC",
+                  "element": "customLwc",
+                  "size": {
+                    "isResponsive": true,
+                    "default": "2",
+                    "large": "2",
+                    "medium": "2",
+                    "small": "2"
+                  },
+                  "stateIndex": 0,
+                  "class": "slds-col ",
+                  "property": {
+                    "recordId": "{Id}",
+                    "customlwcname": "analyzeDocumentOnboarding"
+                  },
+                  "type": "element",
+                  "styleObject": {
+                    "size": {
+                      "isResponsive": true,
+                      "default": "2",
+                      "large": "2",
+                      "medium": "2",
+                      "small": "2"
+                    },
+                    "sizeClass": "slds-large-size_2-of-12 slds-medium-size_2-of-12 slds-small-size_2-of-12 slds-size_2-of-12 ",
+                    "padding": [],
+                    "margin": [],
+                    "background": {
+                      "color": "",
+                      "image": "",
+                      "size": "",
+                      "repeat": "",
+                      "position": ""
+                    },
+                    "container": {
+                      "class": ""
+                    },
+                    "border": {
+                      "type": "",
+                      "width": "",
+                      "color": "",
+                      "radius": "",
+                      "style": ""
+                    },
+                    "elementStyleProperties": {},
+                    "text": {
+                      "align": "",
+                      "color": ""
+                    },
+                    "inlineStyle": "",
+                    "class": "",
+                    "style": "      \n         "
+                  },
+                  "parentElementKey": "element_block_0_0",
+                  "datasourceKey": "state0element0block_element5",
+                  "uKey": "1786043533883-312",
+                  "elementLabel": "ItemRow-0-Custom LWC-5",
+                  "parsedProperty": {
+                    "recordId": "{Id}",
+                    "customlwcname": "analyzeDocumentOnboarding"
+                  },
+                  "styleObjects": [
+                    {
+                      "key": 0,
+                      "conditions": "default",
+                      "styleObject": {
+                        "size": {
+                          "isResponsive": true,
+                          "default": "2",
+                          "large": "2",
+                          "medium": "2",
+                          "small": "2"
+                        },
+                        "sizeClass": "slds-large-size_2-of-12 slds-medium-size_2-of-12 slds-small-size_2-of-12 slds-size_2-of-12 ",
+                        "padding": [],
+                        "margin": [],
+                        "background": {
+                          "color": "",
+                          "image": "",
+                          "size": "",
+                          "repeat": "",
+                          "position": ""
+                        },
+                        "container": {
+                          "class": ""
+                        },
+                        "border": {
+                          "type": "",
+                          "width": "",
+                          "color": "",
+                          "radius": "",
+                          "style": ""
+                        },
+                        "elementStyleProperties": {},
+                        "text": {
+                          "align": "",
+                          "color": ""
+                        },
+                        "inlineStyle": "",
+                        "class": "",
+                        "style": "      \n         "
+                      },
+                      "label": "Default",
+                      "name": "Default",
+                      "conditionString": "",
+                      "draggable": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "childCards": [],
+      "actions": [],
+      "omniscripts": [],
+      "documents": []
+    }
+  ]
+}
